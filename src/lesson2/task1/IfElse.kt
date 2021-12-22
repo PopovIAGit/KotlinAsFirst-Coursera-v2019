@@ -3,8 +3,7 @@
 package lesson2.task1
 
 import lesson1.task1.discriminant
-import kotlin.math.max
-import kotlin.math.sqrt
+import kotlin.math.*
 
 /**
  * Пример
@@ -63,7 +62,14 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String = TODO()
+fun ageDescription(age: Int): String {
+    return when {
+        age % 10 == 1 && age % 100 != 11 -> "$age год"
+        age % 10 in 5..10 || age % 100 in 11..14 -> "$age лет"
+        age % 10 in 2..4 -> "$age года"
+        else -> "Error"
+    }
+}
 
 /**
  * Простая
@@ -76,7 +82,19 @@ fun timeForHalfWay(
     t1: Double, v1: Double,
     t2: Double, v2: Double,
     t3: Double, v3: Double
-): Double = TODO()
+): Double {
+    val firstWay = t1 * v1
+    val secondWay = t2 * v2
+    val thirdWay = t3 * v3
+    val halfWay = (firstWay + secondWay + thirdWay) / 2
+
+    return when {
+        firstWay > halfWay -> halfWay / v1
+        firstWay + secondWay > halfWay -> t1 + (halfWay - firstWay) / v2
+        else -> t1 + t2 + (halfWay - (firstWay + secondWay)) / v3
+    }
+
+}
 
 /**
  * Простая
@@ -91,7 +109,26 @@ fun whichRookThreatens(
     kingX: Int, kingY: Int,
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
-): Int = TODO()
+): Int {   // если фигуры не на доске то угрозы нет
+    if (kingX !in 1..8) return 0
+    if (kingY !in 1..8) return 0
+    if (rookX1 !in 1..8) return 0
+    if (rookY1 !in 1..8) return 0
+    if (rookX2 !in 1..8) return 0
+    if (rookY2 !in 1..8) return 0
+
+    var rook1 = false
+    var rook2 = false
+    if ((kingX == rookX1) || (kingY == rookY1)) rook1 = true
+    if ((kingX == rookX2) || (kingY == rookY2)) rook2 = true
+
+    return when {
+        rook1 && !rook2 -> 1
+        !rook1 && rook2 -> 2
+        rook1 && rook2 -> 3
+        else -> 0
+    }
+}
 
 /**
  * Простая
@@ -107,7 +144,26 @@ fun rookOrBishopThreatens(
     kingX: Int, kingY: Int,
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
-): Int = TODO()
+): Int {
+    if (kingX !in 1..8) return 0
+    if (kingY !in 1..8) return 0
+    if (rookX !in 1..8) return 0
+    if (rookY !in 1..8) return 0
+    if (bishopX !in 1..8) return 0
+    if (bishopY !in 1..8) return 0
+
+    var rook = false
+    var bishop = false
+    if (kingX == rookX || kingY == rookY) rook = true
+    if (abs(kingX - bishopX) == abs(kingY - bishopY)) bishop = true
+    return when {
+        !rook && !bishop -> 0
+        rook && !bishop -> 1
+        !rook && bishop -> 2
+        else -> 3
+    }
+
+}
 
 /**
  * Простая
@@ -117,7 +173,34 @@ fun rookOrBishopThreatens(
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+fun triangleKind(a: Double, b: Double, c: Double): Int {
+
+    var maxLine: Double
+    var sumLine: Double
+    var returnData = 0
+
+    if (a > b + c || b > a + c || c > b + a) return -1 // треуголника не существует
+
+    if (a > b && a > c) {
+        maxLine = a.pow(2.0)
+        sumLine = b.pow(2.0) + c.pow(2.0)
+    } else if (b > c) {
+        maxLine = b.pow(2.0)
+        sumLine = a.pow(2.0) + c.pow(2.0)
+    } else {
+        maxLine = c.pow(2.0)
+        sumLine = b.pow(2.0) + a.pow(2.0)
+    }
+
+    when
+    {
+        maxLine == sumLine -> returnData = 1
+        maxLine < sumLine  -> returnData = 0
+        maxLine > sumLine  -> returnData = 2
+    }
+
+    return returnData
+}
 
 /**
  * Средняя
@@ -127,4 +210,9 @@ fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = TODO()
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = when {
+    b < c || a > d -> -1
+    else -> abs(max(a,c) - min(b, d))
+}
+
+
